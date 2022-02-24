@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.1.0
+ * Version: 0.1.1
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -15,12 +15,14 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 (function($) {
+
     $.fn.jQMarquee = function() {
         return this.each(function() {
 
             /* Items */
             var $item = jQuery(this),
-                $children = $item.children();
+                $children = $item.children(),
+                winWidth = 0;
 
             /* Global values */
             var maxWidth,
@@ -53,6 +55,11 @@ document.addEventListener("DOMContentLoaded", function() {
             jQuery('body').trigger('refresh-lottie-items');
 
             function computeValues() {
+                var tmpWinWidth = window.innerWidth;
+                if (tmpWinWidth == winWidth) {
+                    return;
+                }
+                winWidth = tmpWinWidth;
                 maxWidth = $fakeChildren.innerWidth();
                 if (direction == 'ltr') {
                     initialLeft = maxWidth * 2;
