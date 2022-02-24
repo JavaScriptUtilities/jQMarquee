@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+/* ----------------------------------------------------------
+  Fake Marquee
+---------------------------------------------------------- */
+
+.fake-marquee__wrapper {
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.fake-marquee {
+    white-space: nowrap;
+}
+
+.fake-marquee__inner > *,
+.fake-marquee__inner {
+    display: inline-block;
+    font: inherit;
+    white-space: nowrap;
+    vertical-align: top;
+}
+
+.fake-marquee__inner .sep {
+    padding: 0 0.5em;
+}
