@@ -5,7 +5,6 @@
 ---------------------------------------------------------- */
 
 .fake-marquee__wrapper {
-    margin-bottom: 10px;
     overflow: hidden;
 }
 
@@ -19,8 +18,4 @@
     font: inherit;
     white-space: nowrap;
     vertical-align: top;
-}
-
-.fake-marquee__inner .sep {
-    padding: 0 0.5em;
 }

@@ -1,0 +1,22 @@
+{
+  "name": "jQMarquee",
+  "version": "0.2.0",
+  "description": "",
+  "main": "js/jq-marquee.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JavaScriptUtilities/jQMarquee.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JavaScriptUtilities/jQMarquee/issues"
+  },
+  "homepage": "https://github.com/JavaScriptUtilities/jQMarquee#readme",
+  "devDependencies": {
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-minify": "^3.1.0"
+  }
+}

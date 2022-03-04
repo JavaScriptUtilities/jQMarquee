@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.1.1
+ * Version: 0.2.0
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -10,8 +10,9 @@ document.addEventListener("DOMContentLoaded", function() {
         jQuery('.fake-marquee').jQMarquee();
     }
     refresh_fake_marquee();
-    jQuery('body').on('wpu-ajax-ready', refresh_fake_marquee);
-    jQuery('body').on('refresh-jq-marquee', refresh_fake_marquee);
+    jQuery('body')
+        .on('wpu-ajax-ready', refresh_fake_marquee)
+        .on('refresh-jq-marquee', refresh_fake_marquee);
 });
 
 (function($) {
@@ -88,7 +89,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 }
 
-                $item.get(0).style.transform = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
+                var t = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
+                $item.get(0).style.WebkitTransform = t;
+                $item.get(0).style.MozTransform = t;
+                $item.get(0).style.transform = t;
                 setTimeout(function() {
                     requestAnimationFrame(animateFrame);
                 }, 10);
