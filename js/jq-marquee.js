@@ -1,11 +1,12 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.2.0
+ * Version: 0.3.0
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
 
 document.addEventListener("DOMContentLoaded", function() {
+    'use strict';
     function refresh_fake_marquee() {
         jQuery('.fake-marquee').jQMarquee();
     }
@@ -16,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 (function($) {
+    'use strict';
 
     $.fn.jQMarquee = function() {
         return this.each(function() {
@@ -27,8 +29,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             /* Global values */
             var maxWidth,
+                numbersOfClones = 1,
+                actualNumberOfClones = 0,
                 initialLeft = 0,
                 direction = 'rtl',
+                firstItem,
                 currentLeft;
 
             /* Avoid double launch */
@@ -41,27 +46,34 @@ document.addEventListener("DOMContentLoaded", function() {
             if (!$children.length) {
                 return;
             }
+            firstItem = $children.eq(0);
 
             /* Check direction */
             if ($item.attr('data-marquee-direction')) {
                 direction = $item.attr('data-marquee-direction');
             }
 
-            /* Duplicate item */
-            var $fakeChildren = $children.eq(0).clone();
-            $item.append($fakeChildren);
-            $item.append($children.eq(0).clone());
-            $item.append($children.eq(0).clone());
-
-            jQuery('body').trigger('refresh-lottie-items');
-
             function computeValues() {
                 var tmpWinWidth = window.innerWidth;
                 if (tmpWinWidth == winWidth) {
                     return;
                 }
+
+                /* Create enough clones to fill the window */
+                numbersOfClones = Math.ceil(window.innerWidth / firstItem.innerWidth());
+
+                /* Create and append clones */
+                for (var _i = actualNumberOfClones; _i < numbersOfClones; _i++) {
+                    $item.append(firstItem.clone());
+                }
+                actualNumberOfClones = Math.max(actualNumberOfClones, numbersOfClones);
+
+                /* Refresh lottie animations if needed */
+                jQuery('body').trigger('refresh-lottie-items');
+
+                /* Set  */
                 winWidth = tmpWinWidth;
-                maxWidth = $fakeChildren.innerWidth();
+                maxWidth = firstItem.innerWidth();
                 if (direction == 'ltr') {
                     initialLeft = maxWidth * 2;
                     maxWidth = maxWidth * 3;
