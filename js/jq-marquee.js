@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.3.0
+ * Version: 0.4.0
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
 (function($) {
     'use strict';
 
+    window.jQMarqueeScrollSpeed = 1;
     $.fn.jQMarquee = function() {
         return this.each(function() {
 
@@ -63,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 numbersOfClones = Math.ceil(window.innerWidth / firstItem.innerWidth());
 
                 /* Create and append clones */
+                firstItem.css('min-width', firstItem.get(0).scrollWidth);
                 for (var _i = actualNumberOfClones; _i < numbersOfClones; _i++) {
                     $item.append(firstItem.clone());
                 }
@@ -89,13 +91,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
             function animateFrame() {
                 if (direction == 'ltr') {
-                    currentLeft -= 1;
+                    currentLeft -= window.jQMarqueeScrollSpeed;
                     if (currentLeft < 0) {
                         currentLeft = initialLeft;
                     }
                 }
                 else {
-                    currentLeft += 1;
+                    currentLeft += window.jQMarqueeScrollSpeed;
                     if (currentLeft > maxWidth) {
                         currentLeft = initialLeft;
                     }
