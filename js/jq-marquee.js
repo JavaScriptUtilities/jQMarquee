@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.4.0
+ * Version: 0.4.1
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
