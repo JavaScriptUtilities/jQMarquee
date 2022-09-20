@@ -1,12 +1,13 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.4.1
+ * Version: 0.4.2
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
 
 document.addEventListener("DOMContentLoaded", function() {
     'use strict';
+
     function refresh_fake_marquee() {
         jQuery('.fake-marquee').jQMarquee();
     }
@@ -60,8 +61,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     return;
                 }
 
+                var firstItemWidth = Math.max(100, firstItem.innerWidth());
+
                 /* Create enough clones to fill the window */
-                numbersOfClones = Math.ceil(window.innerWidth / firstItem.innerWidth());
+                numbersOfClones = Math.ceil(window.innerWidth / firstItemWidth);
 
                 /* Create and append clones */
                 firstItem.css('min-width', firstItem.get(0).scrollWidth);

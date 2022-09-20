@@ -19,3 +19,7 @@
     white-space: nowrap;
     vertical-align: top;
 }
+
+.fake-marquee__inner > * {
+    min-width: 100px;
+}
