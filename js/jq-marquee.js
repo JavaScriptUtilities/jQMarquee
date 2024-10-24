@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.4.2
+ * Version: 0.5.0
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var maxWidth,
                 numbersOfClones = 1,
                 actualNumberOfClones = 0,
+                isPaused = false,
                 initialLeft = 0,
                 direction = 'rtl',
                 firstItem,
@@ -53,6 +54,14 @@ document.addEventListener("DOMContentLoaded", function() {
             /* Check direction */
             if ($item.attr('data-marquee-direction')) {
                 direction = $item.attr('data-marquee-direction');
+            }
+
+            if ($item.attr('data-marquee-pause-on-hover') == '1') {
+                $item.on('mouseenter', function() {
+                    isPaused = true;
+                }).on('mouseleave', function() {
+                    isPaused = false;
+                });
             }
 
             function computeValues() {
@@ -93,23 +102,25 @@ document.addEventListener("DOMContentLoaded", function() {
             window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
             function animateFrame() {
-                if (direction == 'ltr') {
-                    currentLeft -= window.jQMarqueeScrollSpeed;
-                    if (currentLeft < 0) {
-                        currentLeft = initialLeft;
-                    }
-                }
-                else {
-                    currentLeft += window.jQMarqueeScrollSpeed;
-                    if (currentLeft > maxWidth) {
-                        currentLeft = initialLeft;
-                    }
-                }
+                if (!isPaused) {
 
-                var t = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
-                $item.get(0).style.WebkitTransform = t;
-                $item.get(0).style.MozTransform = t;
-                $item.get(0).style.transform = t;
+                    if (direction == 'ltr') {
+                        currentLeft -= window.jQMarqueeScrollSpeed;
+                        if (currentLeft < 0) {
+                            currentLeft = initialLeft;
+                        }
+                    } else {
+                        currentLeft += window.jQMarqueeScrollSpeed;
+                        if (currentLeft > maxWidth) {
+                            currentLeft = initialLeft;
+                        }
+                    }
+
+                    var t = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
+                    $item.get(0).style.WebkitTransform = t;
+                    $item.get(0).style.MozTransform = t;
+                    $item.get(0).style.transform = t;
+                }
                 setTimeout(function() {
                     requestAnimationFrame(animateFrame);
                 }, 10);
