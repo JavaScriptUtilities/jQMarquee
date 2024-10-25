@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.5.0
+ * Version: 0.5.1
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -88,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 /* Set  */
                 winWidth = tmpWinWidth;
                 maxWidth = firstItem.innerWidth();
+                initialLeft = maxWidth;
                 if (direction == 'ltr') {
                     initialLeft = maxWidth * 2;
                     maxWidth = maxWidth * 3;
@@ -111,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         }
                     } else {
                         currentLeft += window.jQMarqueeScrollSpeed;
-                        if (currentLeft > maxWidth) {
+                        if (currentLeft > maxWidth *2) {
                             currentLeft = initialLeft;
                         }
                     }
