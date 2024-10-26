@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.5.1
+ * Version: 0.5.2
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 var firstItemWidth = Math.max(100, firstItem.innerWidth());
 
                 /* Create enough clones to fill the window */
-                numbersOfClones = Math.ceil(window.innerWidth / firstItemWidth);
+                numbersOfClones = Math.ceil(window.innerWidth / firstItemWidth) + 1;
 
                 /* Create and append clones */
                 firstItem.css('min-width', firstItem.get(0).scrollWidth);
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 initialLeft = maxWidth;
                 if (direction == 'ltr') {
                     initialLeft = maxWidth * 2;
-                    maxWidth = maxWidth * 3;
+                    maxWidth = maxWidth * 4;
                 }
                 currentLeft = initialLeft;
             }
@@ -104,7 +104,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             function animateFrame() {
                 if (!isPaused) {
-
                     if (direction == 'ltr') {
                         currentLeft -= window.jQMarqueeScrollSpeed;
                         if (currentLeft < 0) {
@@ -112,21 +111,27 @@ document.addEventListener("DOMContentLoaded", function() {
                         }
                     } else {
                         currentLeft += window.jQMarqueeScrollSpeed;
-                        if (currentLeft > maxWidth *2) {
+                        if (currentLeft > maxWidth * 2) {
                             currentLeft = initialLeft;
                         }
                     }
-
-                    var t = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
-                    $item.get(0).style.WebkitTransform = t;
-                    $item.get(0).style.MozTransform = t;
-                    $item.get(0).style.transform = t;
+                    setItemLeft(currentLeft);
                 }
                 setTimeout(function() {
                     requestAnimationFrame(animateFrame);
                 }, 10);
             }
             requestAnimationFrame(animateFrame);
+
+            function setItemLeft(currentLeft) {
+                var t = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
+                $item.get(0).style.WebkitTransform = t;
+                $item.get(0).style.MozTransform = t;
+                $item.get(0).style.transform = t;
+            }
+
+
         });
+
     };
 })(jQuery);
