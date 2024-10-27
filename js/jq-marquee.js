@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.5.2
+ * Version: 0.6.0
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -64,6 +64,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
 
+
+            var lastScrollTop = 0,
+                initialDirection = direction;
+            if($item.attr('data-marquee-change-direction-on-scroll') == '1') {
+                jQuery(window).on('scroll', function() {
+                    var st = jQuery(this).scrollTop();
+                    if (st > lastScrollTop) {
+                        direction = initialDirection == 'rtl' ? 'rtl' : 'ltr';
+                    } else {
+                        direction = initialDirection == 'rtl' ? 'ltr' : 'rtl';
+                    }
+                    lastScrollTop = st;
+                });
+            }
+
             function computeValues() {
                 var tmpWinWidth = window.innerWidth;
                 if (tmpWinWidth == winWidth) {
@@ -104,24 +119,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
             function animateFrame() {
                 if (!isPaused) {
-                    if (direction == 'ltr') {
-                        currentLeft -= window.jQMarqueeScrollSpeed;
-                        if (currentLeft < 0) {
-                            currentLeft = initialLeft;
-                        }
-                    } else {
-                        currentLeft += window.jQMarqueeScrollSpeed;
-                        if (currentLeft > maxWidth * 2) {
-                            currentLeft = initialLeft;
-                        }
-                    }
-                    setItemLeft(currentLeft);
+                    moveMarquee();
                 }
                 setTimeout(function() {
                     requestAnimationFrame(animateFrame);
                 }, 10);
             }
             requestAnimationFrame(animateFrame);
+
+            function moveMarquee(scrollAmount) {
+                scrollAmount = scrollAmount || window.jQMarqueeScrollSpeed;
+                if (direction == 'ltr') {
+                    currentLeft -= scrollAmount;
+                    if (currentLeft < 0) {
+                        currentLeft = initialLeft;
+                    }
+                } else {
+                    currentLeft += scrollAmount;
+                    if (currentLeft > maxWidth * 2) {
+                        currentLeft = initialLeft;
+                    }
+                }
+                setItemLeft(currentLeft);
+            }
 
             function setItemLeft(currentLeft) {
                 var t = 'translate3d(' + (0 - currentLeft + 'px,0,0') + ')';
