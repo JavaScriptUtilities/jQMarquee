@@ -23,3 +23,21 @@
 .fake-marquee__inner > * {
     min-width: 100px;
 }
+
+/* Drag
+-------------------------- */
+
+body .fake-marquee[data-marquee-draggable="1"] {
+    cursor: grab;
+}
+
+body[data-marquee-dragging="1"] {
+    cursor: grabbing!important;
+}
+
+body[data-marquee-dragging="1"] .fake-marquee[data-marquee-draggable="1"] .fake-marquee__inner {
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}

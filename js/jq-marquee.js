@@ -27,10 +27,13 @@ document.addEventListener("DOMContentLoaded", function() {
             /* Items */
             var $item = jQuery(this),
                 $children = $item.children(),
+                $body = jQuery('body'),
+                $wrapper = $item.parent(),
                 winWidth = 0;
 
             /* Global values */
             var maxWidth,
+                baseWidth,
                 numbersOfClones = 1,
                 actualNumberOfClones = 0,
                 isPaused = false,
@@ -57,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             if ($item.attr('data-marquee-pause-on-hover') == '1') {
-                $item.on('mouseenter', function() {
+                $wrapper.on('mouseenter', function() {
                     isPaused = true;
                 }).on('mouseleave', function() {
                     isPaused = false;
@@ -67,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             var lastScrollTop = 0,
                 initialDirection = direction;
-            if($item.attr('data-marquee-change-direction-on-scroll') == '1') {
+            if ($item.attr('data-marquee-change-direction-on-scroll') == '1') {
                 jQuery(window).on('scroll', function() {
                     var st = jQuery(this).scrollTop();
                     if (st > lastScrollTop) {
@@ -78,6 +81,31 @@ document.addEventListener("DOMContentLoaded", function() {
                     lastScrollTop = st;
                 });
             }
+
+
+            /* Drag marquee */
+            var isDragging = false,
+                lastX = 0;
+            if ($item.attr('data-marquee-draggable') == '1') {
+                $wrapper.on('mousedown', function(e) {
+                    isDragging = true;
+                    $body.attr('data-marquee-dragging', '1');
+                    lastX = e.clientX;
+                }).on('mousemove', function(e) {
+                    if (!isDragging) {
+                        return;
+                    }
+                    var diffX = e.clientX - lastX;
+                    lastX = e.clientX;
+                    moveMarquee(direction == 'ltr' ? diffX : -diffX);
+                });
+
+                jQuery(window).on('mouseup', function() {
+                    $body.attr('data-marquee-dragging', '0');
+                    isDragging = false;
+                });
+            }
+
 
             function computeValues() {
                 var tmpWinWidth = window.innerWidth;
@@ -102,7 +130,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 /* Set  */
                 winWidth = tmpWinWidth;
-                maxWidth = firstItem.innerWidth();
+                baseWidth = firstItem.innerWidth();
+                maxWidth = baseWidth;
                 initialLeft = maxWidth;
                 if (direction == 'ltr') {
                     initialLeft = maxWidth * 2;
@@ -118,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
             window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
             function animateFrame() {
-                if (!isPaused) {
+                if (!isPaused && !isDragging) {
                     moveMarquee();
                 }
                 setTimeout(function() {
@@ -134,9 +163,18 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (currentLeft < 0) {
                         currentLeft = initialLeft;
                     }
+                    if (currentLeft > initialLeft) {
+                        currentLeft = 0;
+                    }
                 } else {
                     currentLeft += scrollAmount;
                     if (currentLeft > maxWidth * 2) {
+                        currentLeft = initialLeft;
+                    }
+                    if (currentLeft < initialLeft) {
+                        currentLeft = maxWidth * 2;
+                    }
+                    if (currentLeft < 0) {
                         currentLeft = initialLeft;
                     }
                 }
