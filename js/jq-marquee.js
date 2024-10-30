@@ -1,6 +1,6 @@
 /*
  * Plugin Name: jQMarquee
- * Version: 0.6.0
+ * Version: 0.8.0
  * Plugin URL: https://github.com/JavaScriptUtilities/jQMarquee
  * jQMarquee may be freely distributed under the MIT license.
  */
@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 isPaused = false,
                 initialLeft = 0,
                 direction = 'rtl',
+                _hasPauseonHover = $item.attr('data-marquee-pause-on-hover') == '1',
+                _hasMarqueeDraggable = $item.attr('data-marquee-draggable') == '1',
+                _hasChangeDirectionOnScroll = $item.attr('data-marquee-change-direction-on-scroll') == '1',
                 firstItem,
                 currentLeft;
 
@@ -59,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 direction = $item.attr('data-marquee-direction');
             }
 
-            if ($item.attr('data-marquee-pause-on-hover') == '1') {
+            if (_hasPauseonHover || _hasMarqueeDraggable) {
                 $wrapper.on('mouseenter', function() {
                     isPaused = true;
                 }).on('mouseleave', function() {
@@ -67,10 +70,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
 
-
             var lastScrollTop = 0,
                 initialDirection = direction;
-            if ($item.attr('data-marquee-change-direction-on-scroll') == '1') {
+            if (_hasChangeDirectionOnScroll) {
                 jQuery(window).on('scroll', function() {
                     var st = jQuery(this).scrollTop();
                     if (st > lastScrollTop) {
@@ -82,27 +84,39 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
 
-
             /* Drag marquee */
             var isDragging = false,
                 lastX = 0;
-            if ($item.attr('data-marquee-draggable') == '1') {
-                $wrapper.on('mousedown', function(e) {
+            if (_hasMarqueeDraggable) {
+
+                /* Starting touch on the element */
+                $wrapper.on('mousedown touchstart', function(e) {
+
+                    /* Avoid dragging on links */
+                    if (jQuery(e.target).closest('a').length || jQuery(e.target).closest('button').length) {
+                        return;
+                    }
+
                     isDragging = true;
                     $body.attr('data-marquee-dragging', '1');
-                    lastX = e.clientX;
-                }).on('mousemove', function(e) {
+                    lastX = getClientX(e);
+                });
+
+                /* Stopping move */
+                jQuery(window).on('mouseup touchend', function() {
+                    $body.attr('data-marquee-dragging', '0');
+                    isDragging = false;
+
+                /* Moving if dragging has started */
+                }).on('mousemove touchmove', function(e) {
                     if (!isDragging) {
                         return;
                     }
-                    var diffX = e.clientX - lastX;
-                    lastX = e.clientX;
+                    e.preventDefault();
+                    var currentX = getClientX(e);
+                    var diffX = currentX - lastX;
+                    lastX = currentX;
                     moveMarquee(direction == 'ltr' ? diffX : -diffX);
-                });
-
-                jQuery(window).on('mouseup', function() {
-                    $body.attr('data-marquee-dragging', '0');
-                    isDragging = false;
                 });
             }
 
@@ -186,6 +200,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 $item.get(0).style.WebkitTransform = t;
                 $item.get(0).style.MozTransform = t;
                 $item.get(0).style.transform = t;
+            }
+
+            function getClientX(e){
+                return e.clientX || e.touches[0].clientX;
             }
 
 
